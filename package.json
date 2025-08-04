@@ -1,0 +1,15 @@
+{
+  "name": "demo-tauri",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm run dev:pm2 && pnpm run dev:desktop",
+    "dev:desktop": "cd client/desktop && pnpm dev",
+    "dev:pm2": "pm2 start ecosystem.config.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0"
+}

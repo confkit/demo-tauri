@@ -1,0 +1,14 @@
+{
+  "rust-analyzer.linkedProjects": ["client/desktop/src-tauri/Cargo.toml"],
+  "rust-analyzer.cargo.targetDir": "client/desktop/src-tauri/target/ra",
+  "rust-analyzer.cargo.extraEnv": {
+    "RUSTC_BOOTSTRAP": "1"
+  },
+  "rust-analyzer.check.extraEnv": {
+    "CARGO_TARGET_DIR": "client/desktop/src-tauri/target/ra"
+  },
+  "rust-analyzer.runnables.extraEnv": {
+    "CARGO_TARGET_DIR": "client/desktop/src-tauri/target/ra"
+  },
+  "rust-analyzer.checkOnSave.enable": false
+}
