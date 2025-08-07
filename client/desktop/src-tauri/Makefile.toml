@@ -1,0 +1,114 @@
+[config]
+default_to_workspace = false
+
+[tasks.dev]
+dependencies = [
+  "clean",
+  "check-format",
+  "clippy",
+  "test",
+  "build",
+]
+description = "Development workflow - clean, check, test, and build"
+
+[tasks.clean]
+args = ["clean"]
+command = "cargo"
+description = "Clean build artifacts"
+
+[tasks.check-format]
+args = ["fmt", "--check"]
+command = "cargo"
+description = "Check code formatting"
+
+[tasks.format]
+args = ["fmt"]
+command = "cargo"
+description = "Format code"
+
+[tasks.clippy]
+args = [
+  "clippy",
+  "--all-targets",
+  "--all-features",
+  "--",
+  "-W",
+  "clippy::complexity",
+  "-W",
+  "clippy::correctness",
+  "-A",
+  "dead_code",
+  "-A",
+  "unused_imports",
+  "-A",
+  "unused_variables",
+]
+command = "cargo"
+description = "Run clippy lints"
+
+[tasks.test]
+args = ["test"]
+command = "cargo"
+description = "Run tests"
+
+[tasks.build]
+args = ["build"]
+command = "cargo"
+description = "Build the project"
+
+[tasks.run]
+args = ["run", "--", "--help"]
+command = "cargo"
+description = "Run the application with help"
+
+[tasks.check]
+args = ["check"]
+command = "cargo"
+description = "Check compilation without building"
+dependencies = ["check-format", "clippy"]
+
+[tasks.watch]
+args = ["watch", "-x", "check", "-x", "test", "-i", "examples/**/*", "-i", "docs/**/*"]
+command = "cargo"
+description = "Watch for changes and rebuild"
+install_crate = "cargo-watch"
+
+[tasks.install-deps]
+description = "Install development dependencies"
+script = [
+  "cargo install cargo-watch",
+  "cargo install cargo-make",
+]
+
+# macOS targets
+
+# [tasks.setup-macos-x86_64]
+# args = ["target", "add", "x86_64-apple-darwin"]
+# command = "rustup"
+# description = "Setup macOS x86_64 target"
+
+# [tasks.setup-macos-aarch64]
+# args = ["target", "add", "aarch64-apple-darwin"]
+# command = "rustup"
+# description = "Setup macOS aarch64 target"
+
+[tasks.build-x86_64-apple-darwin]
+args = ["tauri" "build", "--target", "x86_64-apple-darwin"]
+command = "pnpm"
+# dependencies = ["setup-macos-x86_64"]
+description = "Build release version for x86_64-apple-darwin"
+
+[tasks.build-aarch64-apple-darwin]
+args = ["tauri", "build", "--target", "aarch64-apple-darwin"]
+command = "pnpm"
+# dependencies = ["setup-macos-aarch64"]
+description = "Build release version for aarch64-apple-darwin"
+
+[tasks.build-macos]
+args = ["Build release version for macOS"]
+command = "echo"
+dependencies = [
+  "build-x86_64-apple-darwin",
+  "build-aarch64-apple-darwin",
+]
+description = "Build release version for macOS"
