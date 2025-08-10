@@ -51,10 +51,7 @@ args = ["test"]
 command = "cargo"
 description = "Run tests"
 
-[tasks.build]
-args = ["build"]
-command = "cargo"
-description = "Build the project"
+# helper tasks
 
 [tasks.run]
 args = ["run", "--", "--help"]
