@@ -1,12 +1,25 @@
 {
   "name": "demo-tauri",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "dev": "pnpm run dev:pm2 && pnpm run dev:desktop",
-    "dev:desktop": "cd client/desktop && pnpm dev",
-    "dev:pm2": "pm2 start ecosystem.config.cjs"
+    "dev:web": "vite",
+    "dev:desktop": "tauri dev"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "@tauri-apps/cli": "^2"
   },
   "keywords": [],
   "author": "",
