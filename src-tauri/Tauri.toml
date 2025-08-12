@@ -1,0 +1,52 @@
+# 应用名称
+productName = "demo-tauri"
+
+# 应用版本
+version = "0.1.0"
+
+# 应用标识符
+identifier = "com.xiaoyown.demo-tauri"
+
+[build]
+# 构建时移除未使用的命令
+# removeUnusedCommands = true
+# 开发前运行的命令
+beforeDevCommand = ""
+# 开发服务器的 URL
+devUrl = "http://localhost:1420"
+# 构建前运行的命令
+beforeBuildCommand = "pnpm build:web"
+# 前端资源的分发目录
+frontendDist = "../dist"
+
+[app]
+# 应用安全配置, 缺省即为 null
+# [app.security]
+#   csp = null
+
+# 应用窗口配置
+[[app.windows]]
+height = 600
+title = "demo-tauri"
+width = 800
+
+[bundle]
+# 是否激活打包功能
+active = true
+# 打包目标
+targets = "all"
+# 应用图标
+icon = [
+  "icons/32x32.png",
+  "icons/128x128.png",
+  "icons/128x128@2x.png",
+  "icons/icon.icns",
+  "icons/icon.ico",
+]
+
+[bundle.macOS]
+[bundle.macOS.dmg]
+# DMG 窗口大小
+[bundle.macOS.dmg.windowSize]
+height = 600
+width = 800

@@ -1,11 +1,11 @@
-# Tauri v2 + Web 桌面端实战指南（增强版）
+# Tauri v2 + Web 桌面端实战指南
 
 ---
 
 ## 一、Tauri v2 简介（1–2 分钟）
 
-* **Tauri v2** 是目前最新稳定版本，具备更强的跨平台能力、安全性和移动支持。
-* 采用 WebView 加 Rust 后端架构，体积轻、性能优 ([v2.tauri.app](https://v2.tauri.app/learn/window-customization/?utm_source=chatgpt.com))。
+- **Tauri v2** 是目前最新稳定版本，具备更强的跨平台能力、安全性和移动支持。
+- 采用 WebView 加 Rust 后端架构，体积轻、性能优 ([v2.tauri.app](https://v2.tauri.app/learn/window-customization/?utm_source=chatgpt.com))。
 
 ---
 
@@ -13,24 +13,115 @@
 
 Tauri v2 提供丰富的路径获取方法，适用于配置、缓存、日志等。
 
+### 项目结构
+
+```sh
+.
+├── package.json
+├── index.html
+├── src/
+│   ├── main.tsx
+├── src-tauri/
+│   ├── Cargo.toml
+│   ├── Cargo.lock
+│   ├── build.rs # cargo 机制脚本, 正式编译前对 代码/资源/环境 等预处理(根据喜好定制), 此处主要为 Tauri 框架协同工作使用
+│   ├── tauri.conf.json # 主要配置文件
+│   ├── src/
+│   │   ├── main.rs
+│   │   └── lib.rs
+│   ├── icons/
+│   │   ├── icon.png
+│   │   ├── icon.icns
+│   │   └── icon.ico
+│   └── capabilities/ # 权限集合
+│       └── default.json
+```
+
+### 配置文件
+
+[tauri.conf.json](https://v2.tauri.app/zh-cn/develop/configuration-files/)
+
+```jsonc
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "demo-tauri",
+  "version": "0.1.0",
+  "identifier": "com.tauri.ikun.dev",
+  "build": {
+    // 前端产物目录
+    "frontendDist": "../dist",
+    // 开发前端资源 URL
+    "devUrl": "http://localhost:1420",
+    // 开发前的命令
+    "beforeDevCommand": "",
+    // 构建前的命令
+    "beforeBuildCommand": "pnpm build:web"
+  },
+  "app": {
+    // 应用窗口配置
+    "windows": [
+      {
+        "title": "demo-tauri",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  // 打包配置
+  "bundle": {
+    // 是否启用打包
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    // mjacOS 产物处理
+    "macOS": {
+      "dmg": {
+        // dmg 文件安装时窗口大小
+        "windowSize": {
+          "width": 800,
+          "height": 600
+        }
+      }
+    }
+  }
+}
+```
+
 ### 常用路径 API
 
 通过 `@tauri-apps/api/path` 提供的重要函数包括：
 
-* `appConfigDir()` → 应用配置目录（如 macOS: `~/Library/Application Support/<bundleIdentifier>`）
-* `appCacheDir()`, `appDataDir()`, `appLogDir()` 等，方便管理缓存或日志资源。([Tauri][1], [Michael Charles Aubrey][2])
+- `appConfigDir()` → 应用配置目录（如 macOS: `~/Library/Application Support/<bundleIdentifier>`）
+- `appCacheDir()`, `appDataDir()`, `appLogDir()` 等，方便管理缓存或日志资源。([Tauri][1], [Michael Charles Aubrey][2])
 
 ### 使用示例：读取配置 + 写日志
 
 ```js
-import { appConfigDir, appLogDir } from '@tauri-apps/api/path';
-import { readTextFile, writeTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { appConfigDir, appLogDir } from "@tauri-apps/api/path";
+import {
+  readTextFile,
+  writeTextFile,
+  BaseDirectory,
+} from "@tauri-apps/plugin-fs";
 
 async function loadSettings() {
   const cfgDir = await appConfigDir();
-  console.log('配置路径:', cfgDir);
+  console.log("配置路径:", cfgDir);
   try {
-    const content = await readTextFile('settings.json', { baseDir: BaseDirectory.AppConfig });
+    const content = await readTextFile("settings.json", {
+      baseDir: BaseDirectory.AppConfig,
+    });
     return JSON.parse(content);
   } catch {
     return {};
@@ -39,7 +130,10 @@ async function loadSettings() {
 
 async function writeLog(msg) {
   const logDir = await appLogDir();
-  await writeTextFile('app.log', msg + '\n', { baseDir: BaseDirectory.AppLog, append: true });
+  await writeTextFile("app.log", msg + "\n", {
+    baseDir: BaseDirectory.AppLog,
+    append: true,
+  });
 }
 ```
 
@@ -68,10 +162,10 @@ fn main() {
 ### 前端调用示例
 
 ```js
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from "@tauri-apps/api/tauri";
 (async () => {
-  const sum = await invoke('add', { a: 3, b: 5 });
-  console.log('Sum:', sum);
+  const sum = await invoke("add", { a: 3, b: 5 });
+  console.log("Sum:", sum);
 })();
 ```
 
@@ -119,14 +213,16 @@ Tauri 提供内置手段实现自定义窗口标题栏，同时兼容拖动、�
   width: 100%;
   user-select: none;
 }
-.titlebar button:hover { background: #0059b3; }
+.titlebar button:hover {
+  background: #0059b3;
+}
 ```
 
 ```js
-import { appWindow } from '@tauri-apps/api/window';
-document.getElementById('min').onclick = () => appWindow.minimize();
-document.getElementById('max').onclick = () => appWindow.toggleMaximize();
-document.getElementById('close').onclick = () => appWindow.close();
+import { appWindow } from "@tauri-apps/api/window";
+document.getElementById("min").onclick = () => appWindow.minimize();
+document.getElementById("max").onclick = () => appWindow.toggleMaximize();
+document.getElementById("close").onclick = () => appWindow.close();
 ```
 
 多篇教程与示例亦推荐此结构([Tauri][4], [DEV Community][5], [jonaskruckenberg.github.io][6])。
@@ -135,13 +231,13 @@ document.getElementById('close').onclick = () => appWindow.close();
 
 ## 五、完整分享结构建议（20 分钟目标 + 深度示范）
 
-| 时间   | 内容                          |
-| ---- | --------------------------- |
-| 2 分钟 | Tauri v2 核心理念与优势            |
-| 6 分钟 | 系统路径管理实战：读取配置 + 写日志         |
-| 6 分钟 | 后端命令机制：Rust → 前端调用演示        |
-| 6 分钟 | 自定义窗口头部：配置 + HTML/CSS/JS 实战 |
-| 2 分钟 | 总结 + 拓展方向（权限控制、打包、插件等）      |
+| 时间   | 内容                                      |
+| ------ | ----------------------------------------- |
+| 2 分钟 | Tauri v2 核心理念与优势                   |
+| 6 分钟 | 系统路径管理实战：读取配置 + 写日志       |
+| 6 分钟 | 后端命令机制：Rust → 前端调用演示         |
+| 6 分钟 | 自定义窗口头部：配置 + HTML/CSS/JS 实战   |
+| 2 分钟 | 总结 + 拓展方向（权限控制、打包、插件等） |
 
 ---
 

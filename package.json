@@ -5,7 +5,15 @@
   "type": "module",
   "scripts": {
     "dev:web": "vite",
-    "dev:desktop": "tauri dev"
+    "dev:desktop": "tauri dev",
+    "build:web": "tsc && vite build",
+    "check": "pnpm check:fmt && pnpm check:lint",
+    "check:fmt": "cd src-tauri && cargo make check-format",
+    "check:lint": "cd src-tauri && cargo make clippy",
+    "build:macos:arm64": "tauri build --target aarch64-apple-darwin",
+    "build:macos:x86_64": "tauri build --target x86_64-apple-darwin",
+    "build:macos:universal": "tauri build --target universal-apple-darwin",
+    "build:macos": "pnpm build:macos:arm64 && pnpm build:macos:x86_64 && pnpm build:macos:universal"
   },
   "dependencies": {
     "react": "^19.1.0",
